@@ -1,0 +1,5 @@
+.bundle/
+pkg/
+.rbenv-version
+*.gem
+*.gems
