@@ -20,6 +20,8 @@ Adherence provides a simple means of declaring abstract behavior in Ruby modules
 
 ## Usage
 
+### Classes
+
 A class may adhere to any number of modules by use of the adheres_to method.
 
 ```ruby
@@ -42,6 +44,8 @@ module Calculator
 end
 
 class TexasInstruments
+  adheres_to ElectronicDevice, Calculator
+
   def on
     @power = true
   end
@@ -69,14 +73,49 @@ class TexasInstruments
   def self.compatible?(device1, device2)
     device1.respond_to?(:add) && device2.respond_to?(:add)
   end
-
-  adheres_to ElectronicDevice, Calculator
 end
 ```
 
-A class must define all instance and class methods of all visibilities defined in each module passed to adheres_to or an error is raised. Not only must all methods be defined, but their method signitures must match those of the specified module(s). Failure to implement all methods will result in a NotImplementedError when the class is loaded. Failure to incorrectly declare a message signature will result in a Adherence::NotAdheredError when the class is loaded. Because the methods defined in the class must be inspected, adheres_to must be called after the methods are defined in the class.
+When adheres_to is called, the existing class and instance methods defined in the class are inspected. A check is made on any method whose name and visibility matches that of a method defined in one of the specified modules. If the signature of the method defined in the class does not match that of the method defined in the module, an Adherence::NotAdheredError will be raised. Similarly, any methods defined after adheres_to is called will be inspected when added to the class. Any method not defined in the class will raise a NotImplementedError when invoked:
 
-Similarly, a module may adhere to other modules:
+```ruby
+class HewlettPackard
+adheres_to ElectronicDevice, Calculator
+
+  def on
+    @power = true
+  end
+
+  def off
+    @power = false
+  end
+
+  def add(x1, x2)
+    x1 + x2
+  end
+
+  def subtract(x1, x2)
+    x1 - x2
+  end
+
+  def multiply(x1, x2)
+    x1 * x2
+  end
+end
+
+> device1 = HewlettPackard.new
+> device2 = HewlettPackard.new
+
+> device1.divide(12, 4)
+Adherence::NotImplementedError: "HewlettPackard must define divide"
+
+> HewlettPackard.compatible?(device1, device2)
+Adherence::NotImplementedError: "HewlettPackard must define compatible?"
+```
+
+### Modules
+
+A module may adhere to other modules:
 
 ```ruby
 module ScientificCalculator
