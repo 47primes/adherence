@@ -1,7 +1,7 @@
 Gem::Specification.new do |spec|
   spec.name         = "adherence"
-  spec.version      = "0.1.0"
-  spec.date         = "2012-08-30"
+  spec.version      = "0.2.0"
+  spec.date         = "2012-09-10"
   spec.summary      = "Adds simple interface-like behavior to Ruby"
   spec.authors      = ["Mike Bradford"]
   spec.email        = "mbradford@47primes.com"
